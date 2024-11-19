@@ -40,9 +40,39 @@ import com.example.to_do_compose.components.PriorityItem
 import com.example.to_do_compose.data.models.Priority
 import com.example.to_do_compose.ui.theme.LARGE_PADDING
 import com.example.to_do_compose.ui.theme.TOP_APP_BAR_HEIGHT
+import com.example.to_do_compose.ui.viewmodels.SharedViewModel
+import com.example.to_do_compose.util.SearchAppBarState
 
 @Composable
-fun ListAppBar() {
+fun ListAppBar(
+    sharedViewModel: SharedViewModel,
+    searchAppBarState: SearchAppBarState,
+    searchTextState: String
+) {
+    when (searchAppBarState) {
+        SearchAppBarState.CLOSED -> {
+            DefaultListAppBar(
+                onSearchClicked = {
+                    sharedViewModel.searchAppBarState.value = SearchAppBarState.OPENED
+                },
+                onSortClicked = {},
+                onDeleteAllConfirmed = {}
+            )
+        }
+        else -> {
+            SearchAppBar(
+                text = searchTextState,
+                onTextChange = { newText ->
+                    sharedViewModel.searchTextState.value = newText
+                },
+                onCloseClicked = {
+                    sharedViewModel.searchAppBarState.value = SearchAppBarState.CLOSED
+                    sharedViewModel.searchTextState.value = ""
+                },
+                onSearchClicked = {}
+            )
+        }
+    }
     DefaultListAppBar(
         onSearchClicked = {},
         onSortClicked = {},
